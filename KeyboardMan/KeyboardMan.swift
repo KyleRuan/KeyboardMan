@@ -74,7 +74,16 @@ final public class KeyboardMan {
                         self.animateWhenKeyboardDisappear?(info.height)
                         self.appearPostIndex = 0
                     }
-                }, completion: nil)
+                }) { success in
+                    if success {
+                        switch info.action {
+                        case .show:
+                            self.animateCompletionWhenKeyboardAppear?()
+                        case .hide:
+                            self.animateCompletionWhenKeyboardDisappear?()
+                        }
+                    }
+                }
                 // post full info
                 postKeyboardInfo?(self, info)
             }
@@ -86,6 +95,8 @@ final public class KeyboardMan {
             keyboardObserveEnabled = true
         }
     }
+    public var animateCompletionWhenKeyboardAppear: (() -> Void)?
+    public var animateCompletionWhenKeyboardDisappear: (() -> Void)?
 
     public var animateWhenKeyboardDisappear: ((_ keyboardHeight: CGFloat) -> Void)? {
         didSet {
